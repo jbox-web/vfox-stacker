@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force stacker .
+mise cache clear
+mise install stacker@1.2.0
+
+# Capture and display the output while also verifying it
+output=$(mise exec "stacker@1.2.0" -- "stacker" --version)
+echo "stacker output: ${output}"
+
+if echo "${output}" | grep -q '1.2.0'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version stacker@1.2.0"
+  exit 1
+fi
